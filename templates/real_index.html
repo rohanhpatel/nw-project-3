@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Bellybutton Biodiversity</title>
+  <title>Haunted USA</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -13,7 +13,7 @@
   crossorigin="" />
 
   <!-- Our CSS -->
-  <link rel="stylesheet" type="text/css" href="LQhauntedstyle.css">
+  <link rel="stylesheet" type="text/css" href="real_style.css">
 
   <!-- Leaflet.markercluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
@@ -25,24 +25,6 @@
 </head>
 
 <body>
-  <!-- The div that holds our map -->
-  <div id="map"></div>
-
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""></script>
-   
-  <!-- Leaflet.markercluster JavaScript -->
-  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
- 
-  <!-- D3 JavaScript -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <!-- Our JavaScript -->
-  <script type="text/javascript" src="LQhauntedleaflet2.js"></script>
- 
-
-
   <div class="container">
     <div class="row">
       <div class="col-md-12 jumbotron text-center">
@@ -50,8 +32,11 @@
         <p>Use the interactive charts below to explore the dataset</p>
       </div>
     </div>
+  </div>
+  
+  <div class="container">
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-2">   
         <div class="well">
           <h5>State:</h5>
           <select id="selDataset" onchange="optionChanged(this.value)"></select>
@@ -69,9 +54,25 @@
     </div>
   </div>
 
+  <div class="container">
+    <div class="row">
+      <!-- The div that holds our map -->
+      <div id="map"></div>
+    </div>
+  </div>
+
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="static/js/real-app.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+  <!-- Leaflet.markercluster JavaScript -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+  
+  <script src="../static/js/real-app.js"></script>
+
+
 </body>
 
 </html>
