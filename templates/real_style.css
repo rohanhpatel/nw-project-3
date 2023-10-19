@@ -1,11 +1,18 @@
-body {
-    padding: 0;
-    margin: 0;
-  }
-  
-  #map,
-  body,
-  html {
-    height: 100%;
-  }
-  
+body, html {
+  padding: 0;
+  margin: 0;
+  height: 100%; /* Set the height of the entire page to 100% */
+}
+
+/* Add space around the containers and center the content */
+.container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Set the width of the map and center it within its container */
+#map {
+  width: 100%;
+  margin: 20px auto; /* Center the map and add space above and below */
+}

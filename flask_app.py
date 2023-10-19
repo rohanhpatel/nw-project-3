@@ -118,8 +118,13 @@ def get_state_place_data(chosenState):
 
 @app.route('/leaflet')
 def delete_undefined_coord():
-    result = collection.delete_many({"$or": [{"latitude": {"$exists": False}}, {"longitude": {"$exists": False}}]})
-    data = list(collection.find({}, {'_id': 0}))
+    client = MongoClient("mongodb://localhost:27017/")
+    haunted_places = client['nw_project_3']['haunted_places'] 
+    
+    result = haunted_places.delete_many({"$or": [{"latitude": {"$exists": False}}, {"longitude": {"$exists": False}}]})
+    data = list(haunted_places.find({}, {'_id': 0}))
+    client.close()
+    
     return jsonify(data)
 
 if __name__ == "__main__":
