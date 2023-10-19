@@ -116,5 +116,11 @@ def get_state_place_data(chosenState):
 
     return jsonify({"x": list(merged_place_counts.index), "y": values})
 
+@app.route('/leaflet')
+def delete_undefined_coord():
+    result = collection.delete_many({"$or": [{"latitude": {"$exists": False}}, {"longitude": {"$exists": False}}]})
+    data = list(collection.find({}, {'_id': 0}))
+    return jsonify(data)
+
 if __name__ == "__main__":
     app.run(debug=True)
