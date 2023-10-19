@@ -122,7 +122,7 @@ def delete_undefined_coord():
     haunted_places = client['nw_project_3']['haunted_places'] 
     
     result = haunted_places.delete_many({"$or": [{"latitude": {"$exists": False}}, {"longitude": {"$exists": False}}]})
-    data = list(collection.find({}, {'_id': 0}))
+    data = list(haunted_places.find({}, {'_id': 0}))
     client.close()
     
     return jsonify(data)
