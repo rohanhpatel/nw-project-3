@@ -32,61 +32,30 @@ def get_locations():
 
 def get_location_data(state=None):
     client = MongoClient("mongodb://localhost:27017/")
-    haunted_places = client['nw_project_3']['haunted_places'] 
+    haunted_places = client['nw_project_3']['haunted_places']
 
-    if state == None:
-        query = {}
-    else:
-        query = {"state": state}
-    filter = {"_id": 0, "description": 0, "country": 0, "state_abbrev": 0}
-
-    state_res = list(haunted_places.find(query, filter))
+    values = list()
+    for loc in get_locations():
+        match_query = {"$match": {"$and": [{"location": {"$regex": loc, "$options": "i"}}, {"state": state}]}}
+        if state == None:
+            match_query = {"$match": {"location": {"$regex": loc, "$options": "i"}}}
+        group_query = {"$group": {"_id": "$state", "count": {"$sum": 1}}}
+        result = list(haunted_places.aggregate([match_query, group_query]))
+        if len(result) == 0:
+            values.append(0)
+        else:
+            values.append(result[0]['count'])
 
     client.close()
 
-    haunted_state = pd.DataFrame(state_res)
-    haunted_state['place'] = haunted_state['location'].str.extract(r'([a-zA-Z]+)\s*$')
+    res_df = pd.DataFrame({
+        "locations": get_locations(),
+        "values": values
+    })
 
-    # Replace 'inn' with 'hotel' in the 'place' column
-    haunted_state['place'] = haunted_state['place'].str.replace('inn', 'hotel', case=False)
-    
-    haunted_state['place'] = haunted_state['location'].str.split().str[-1]
-    haunted_state['place'] = haunted_state['place'].apply(lambda word: re.sub(r'[^a-zA-Z]', '', word) if pd.notnull(word) else '') #Removing non-letter characters from the last position using regular expression
-    haunted_state['place'] = haunted_state['place'].str.replace('inn', 'hotel')
+    res_df.sort_values(by="values", ascending=False, inplace=True)
 
-    merge_dict = {
-    'school': 'Schools',
-    'School': 'Schools',
-    'High': 'Schools',
-    'university': 'Schools',
-    'University': 'Schools',
-    'college': 'Schools',
-    'College': 'Schools',
-    'Elementary': 'Schools',  
-    'elementary': 'Schools',
-    'Academy': 'Schools',
-    'Cementeries': 'Cemeteries',
-    'cemetery': 'Cemeteries',  
-    'Cemetery': 'Cemeteries', 
-    'Graveyard': 'Cemeteries',
-    'House': 'Houses',
-    'Apartments': 'Houses',
-    'home': 'Houses',
-    'Mansion': 'Houses',
-    'Home': 'Houses',
-    'house':'Houses',
-    'Road': 'Roads',
-    'road': 'Roads',
-    'Street':'Roads',
-    'Rd': 'Roads',
-    'hotel':'Hotels',
-    'Hotel':'Hotels',
-    }
-    haunted_state['place_merge'] = haunted_state['place'].replace(merge_dict)
-    haunted_state['place_merge'].replace('', None, inplace=True)
-    haunted_state.dropna(inplace=True)
-
-    return haunted_state
+    return res_df
 
 @app.route("/")
 def main_page():
@@ -98,14 +67,12 @@ def return_state_data():
 
 @app.route("/hidden/locations")
 def return_location_data():
-    haunted_locations = get_location_data()
-    return jsonify(list(haunted_locations['place_merge'].unique()))
+    return jsonify(get_locations())
 
-@app.route("/locations/<chosenState>")
-def get_state_location_data(chosenState):
+@app.route("/locationBarGraphData/<chosenState>")
+def get_location_bar_graph_data(chosenState):
     haunted_state = get_location_data(chosenState)
-    merged_place_counts = haunted_state['place_merge'].value_counts()
-    return jsonify({"x": list(merged_place_counts.index), "y": [int(x) for x in merged_place_counts.values]})
+    return jsonify({"x": list(haunted_state['locations']), "y": list(haunted_state['values'])})
 
 @app.route("/leaflet/<chosenState>")
 def get_leaflet_data(chosenState):
@@ -146,8 +113,6 @@ def delete_undefined_coord():
     client.close()
     
     return jsonify(data)
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

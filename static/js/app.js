@@ -15,26 +15,13 @@ d3.json("/hidden/states").then((states) => {
     }
 });
 
-d3.json("/hidden/locations").then((locations) => {
-    console.log(locations);
-
-    selectElement = d3.select("#selLocation");
-
-    for (let i = 0; i < locations.length; i++) {
-        selectElement.append("option").text(locations[i]).attr("value", locations[i]);
-    }
-});
-
 function stateChanged(state) {
-    generateStateSightsBarGraph(state);
-}
-
-function locationChanged(location) {
-    console.log(location);
+    generateStateLocationBarGraph(state);
+    generateStateLeaflet(state);
 }
 
 function generateStateLocationBarGraph(state) {
-    d3.json("/locations/" + state).then((data) => {
+    d3.json("/locationBarGraphData/" + state).then((data) => {
         let topTenValues = data.y.slice(0, 10);
         let topTenLabels = data.x.slice(0, 10);
 
@@ -82,5 +69,5 @@ function generateStateLeaflet(state) {
     });
 }
 
-generateStateSightsBarGraph("Alabama");
+generateStateLocationBarGraph("Alabama");
 generateStateLeaflet("Alabama");
