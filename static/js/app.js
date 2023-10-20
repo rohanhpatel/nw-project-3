@@ -2,20 +2,33 @@
 d3.json("/hidden/states").then((states) => {
     console.log(states);
 
-    selectElement = d3.select("#selDataset");
+    selectElement = d3.select("#selState");
 
     for (let i = 0; i < states.length; i++) {
         selectElement.append("option").text(states[i]).attr("value", states[i]);
     }
 });
 
-function optionChanged(state) {
+d3.json("/hidden/locations").then((locations) => {
+    console.log(locations);
+
+    selectElement = d3.select("#selLocation");
+
+    for (let i = 0; i < locations.length; i++) {
+        selectElement.append("option").text(locations[i]).attr("value", locations[i]);
+    }
+});
+
+function stateChanged(state) {
     generateStateSightsBarGraph(state);
-    generateStateLeaflet(state);
 }
 
-function generateStateSightsBarGraph(state) {
-    d3.json("/sights/" + state).then((data) => {
+function locationChanged(location) {
+    console.log(location);
+}
+
+function generateStateLocationBarGraph(state) {
+    d3.json("/locations/" + state).then((data) => {
         let topTenValues = data.y.slice(0, 10);
         let topTenLabels = data.x.slice(0, 10);
 
@@ -27,7 +40,7 @@ function generateStateSightsBarGraph(state) {
 
         let barGraphLayout = {
             title: {
-                text: "Top 10 Sights in " + state
+                text: "Top 10 Haunted Locations in " + state
             }
         }
 
@@ -67,4 +80,4 @@ function generateStateLeaflet(state) {
 }
 
 generateStateSightsBarGraph("Alabama");
-generateStateLeaflet("Alabama");
+// generateStateLeaflet("Alabama");

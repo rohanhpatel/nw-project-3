@@ -27,47 +27,23 @@ def get_states():
 
     return state_list
 
-@app.route("/")
-def main_page():
-    return render_template('index.html')
+def get_locations():
+    return ["School", "Cemetery", "House", "Hotel", "Road", "Park", "Bridge", "Hospital", "Church", "Theater", "Restaurant"]
 
-@app.route("/hidden/states")
-def return_state_data():
-    return jsonify(get_states())
-
-# @app.route("/hidden/data")
-# def return_all_data():
-#     client = MongoClient("mongodb://localhost:27017/")
-#     haunted_places = client['nw_project_3']['haunted_places']   
-
-#     full_res = list(haunted_places.find())
-#     full_data = list()
-#     for res in full_res:
-#         d = dict()
-#         for key in res:
-#             if key == "_id":
-#                 d[key] = str(res[key])
-#             else:
-#                 d[key] = res[key]
-#         full_data.append(d)
-    
-#     client.close()
-
-#     return jsonify(full_data)
-
-@app.route("/sights/<chosenState>")
-def get_state_sight_data(chosenState):
+def get_location_data(state=None):
     client = MongoClient("mongodb://localhost:27017/")
     haunted_places = client['nw_project_3']['haunted_places'] 
 
-    query = {"state": chosenState}
+    if state == None:
+        query = {}
+    else:
+        query = {"state": state}
     filter = {"_id": 0, "description": 0, "country": 0, "state_abbrev": 0}
 
     state_res = list(haunted_places.find(query, filter))
 
     client.close()
 
-    # make dataframe and then use Joel's code to get the x and y values for this bar graph
     haunted_state = pd.DataFrame(state_res)
     haunted_state['place'] = haunted_state['location'].str.extract(r'([a-zA-Z]+)\s*$')
 
@@ -89,10 +65,10 @@ def get_state_sight_data(chosenState):
     'Elementary': 'Schools',  
     'elementary': 'Schools',
     'Academy': 'Schools',
-    'Cementeries': 'Cementeries',
-    'cemetery': 'Cementeries',  
-    'Cemetery': 'Cementeries', 
-    'Graveyard': 'Cementeries',
+    'Cementeries': 'Cemeteries',
+    'cemetery': 'Cemeteries',  
+    'Cemetery': 'Cemeteries', 
+    'Graveyard': 'Cemeteries',
     'House': 'Houses',
     'Apartments': 'Houses',
     'home': 'Houses',
@@ -107,9 +83,28 @@ def get_state_sight_data(chosenState):
     'Hotel':'Hotels',
     }
     haunted_state['place_merge'] = haunted_state['place'].replace(merge_dict)
+    haunted_state['place_merge'].replace('', None, inplace=True)
+    haunted_state.dropna(inplace=True)
 
+    return haunted_state
+
+@app.route("/")
+def main_page():
+    return render_template('index.html')
+
+@app.route("/hidden/states")
+def return_state_data():
+    return jsonify(get_states())
+
+@app.route("/hidden/locations")
+def return_location_data():
+    haunted_locations = get_location_data()
+    return jsonify(list(haunted_locations['place_merge'].unique()))
+
+@app.route("/locations/<chosenState>")
+def get_state_location_data(chosenState):
+    haunted_state = get_location_data(chosenState)
     merged_place_counts = haunted_state['place_merge'].value_counts()
-
     return jsonify({"x": list(merged_place_counts.index), "y": [int(x) for x in merged_place_counts.values]})
 
 @app.route("/leaflet/<chosenState>")
