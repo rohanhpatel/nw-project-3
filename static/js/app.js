@@ -1,3 +1,9 @@
+// Initialize the map
+let myMap = L.map("map").setView([37.09, -95.71], 4);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(myMap);
 
 d3.json("/hidden/states").then((states) => {
     console.log(states);
@@ -54,14 +60,12 @@ function generateStateLeaflet(state) {
 
         let city_data = data.cities;
 
-        let myMap = L.map("map", {
-            center: [data.state_lat, data.state_lng],
-            zoom: 5
+        // Clear the map before adding new data
+        myMap.eachLayer(function (layer) {
+            if (layer instanceof L.Circle) {
+                myMap.removeLayer(layer);
+            }
         });
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(myMap);
 
         for (let i = 0; i < city_data.length; i++) {
             cur_city = city_data[i];
@@ -75,9 +79,8 @@ function generateStateLeaflet(state) {
                 .addTo(myMap);
             }
         }
-
     });
 }
 
 generateStateSightsBarGraph("Alabama");
-// generateStateLeaflet("Alabama");
+generateStateLeaflet("Alabama");
