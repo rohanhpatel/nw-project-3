@@ -107,6 +107,7 @@ def get_leaflet_data(chosenState):
 # Define a dictionary to map keywords to categories
 keyword_mapping = {
     'witch': 'Witches',
+    'witches': 'Witches',
     'light': 'Lights',
     'lights': 'Lights',
     'footsteps': 'Footsteps',

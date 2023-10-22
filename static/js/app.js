@@ -58,12 +58,12 @@ function generateStateLocationBarGraph(state) {
 function generateSightingsPiechart(state) {
     d3.json("/sightings/" + state).then((data) => {
         let labels = data.labels.filter((label, index) => {
-            // Exclude the "Total" label and labels with a count of 0
+            // Exclude "Total" labels 
             return label !== "Total" && data.counts[index] !== 0;
         });
 
         let counts = data.counts.filter((count, index) => {
-            // Exclude counts with a label of "Total" or 0
+            // Exclude counts value of 0
             return data.labels[index] !== "Total" && count !== 0;
         });
 
@@ -97,20 +97,21 @@ function generateStateLeaflet(state) {
             }
         });
 
-        // Load the state center coordinates and zoom level from your JSON data
+        // Load the state center coordinates and zoom level from JSON data
+        // https://gist.github.com/claraj/3880cd48b3d8cb3a7f900aeb30b18fdd
         d3.json("../static/data/state_centers.json").then((centerData) => {
             // Find the state data by matching the state name
-            const stateInfo = centerData.find((item) => item.name === state);
+            let stateInfo = centerData.find((item) => item.name === state);
 
             if (stateInfo) {
-                const stateCenterLat = stateInfo.lat;
-                const stateCenterLng = stateInfo.lon;
-                const stateZoomLevel = stateInfo.zoom*1.2;
+                let stateCenterLat = stateInfo.lat;
+                let stateCenterLng = stateInfo.lon;
+                let stateZoomLevel = stateInfo.zoom*1.2;
 
                 console.log("Center Coordinates:", stateCenterLat, stateCenterLng);
                 console.log("Zoom Level:", stateZoomLevel);
 
-                const stateCenter = [stateCenterLat, stateCenterLng];
+                let stateCenter = [stateCenterLat, stateCenterLng];
 
                 // Set the view to center on the state with an appropriate zoom level
                 myMap.setView(stateCenter, stateZoomLevel);
@@ -124,7 +125,7 @@ function generateStateLeaflet(state) {
                         color: "black",
                         fillColor: "white",
                         radius: cur_city["count"] * 100,
-                    }).bindPopup(`<p>City: ${cur_city["name"]}</p><p>Number of Sightings: ${cur_city["count"]}</p>`)
+                    }).bindPopup(`<h3>City: ${cur_city["name"]}</h3><h4>Number of Sightings: ${cur_city["count"]}</h4>`)
                     .addTo(myMap);
                 }
             }

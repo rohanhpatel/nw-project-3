@@ -5,15 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Ghost Sightings in the US</title>
+  <title>Haunted U.S.A.</title>
   <!-- D3 JS -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
   <!-- Plotly JS -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-  <!-- Our CSS -->
-  <!-- <link rel="stylesheet" type="text/css" href="real_style.css"> -->
   
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -25,12 +22,6 @@
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""></script>
 
-  <!-- Leaflet.markercluster JavaScript -->
-  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-
-  <!-- FusionChart Library-->
-  <script src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
-
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
@@ -40,8 +31,8 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 jumbotron text-center">
-        <h1>Ghost Sightings Around the US</h1>
-        <p>Use the interactive charts below to explore the dataset</p>
+        <h1>Haunted Places in the U.S.A.</h1>
+        <p>Select a state from the drop-down menu to begin</p>
       </div>
     </div>
     <div class="row">
@@ -51,9 +42,11 @@
           <select id="selState" onchange="stateChanged(this.value)"></select>
         </div>
       </div>
+      <!-- BarGraph div -->
       <div class="col-md-5">
         <div id="bar"></div>
       </div>
+      <!-- PieChart div -->
       <div class="col-md-5">
         <div id="pie"></div>
       </div>
@@ -61,7 +54,7 @@
   </div>
   <div class="container">
     <div class="row">
-      <!-- The div that holds our map -->
+      <!-- Map div -->
       <div id="map" style="width: 100%; height: 600px; position: relative; z-index: 1;"></div>
     </div>
   </div>
