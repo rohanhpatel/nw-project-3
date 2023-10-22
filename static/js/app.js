@@ -31,6 +31,7 @@ d3.json("/hidden/states").then((states) => {
 function stateChanged(state) {
     generateStateLocationBarGraph(state);
     generateStateLeaflet(state);
+    generateSightingsPiechart(state);
 }
 
 function generateStateLocationBarGraph(state) {
@@ -53,6 +54,35 @@ function generateStateLocationBarGraph(state) {
         Plotly.newPlot("bar", barGraphData, barGraphLayout);
     });
 }
+
+function generateSightingsPiechart(state) {
+    d3.json("/sightings/" + state).then((data) => {
+        let labels = data.labels.filter((label, index) => {
+            // Exclude the "Total" label and labels with a count of 0
+            return label !== "Total" && data.counts[index] !== 0;
+        });
+
+        let counts = data.counts.filter((count, index) => {
+            // Exclude counts with a label of "Total" or 0
+            return data.labels[index] !== "Total" && count !== 0;
+        });
+
+        let totalSightings = data.counts.reduce((total, count) => total + count, 0);
+
+        let chartData = [{
+            labels: labels,
+            values: counts,
+            type: 'pie'
+        }];
+
+        let chartConfig = {
+            title: "Observations in " + state + " (Total: " + totalSightings + ")"
+        };
+
+        Plotly.newPlot("pie", chartData, chartConfig);
+    });
+}
+
 
 function generateStateLeaflet(state) {
     d3.json("/leaflet/" + state).then((data) => {
@@ -105,3 +135,4 @@ function generateStateLeaflet(state) {
 
 generateStateLocationBarGraph("");
 generateStateLeaflet("");
+generateSightingsPiechart("");

@@ -103,16 +103,73 @@ def get_leaflet_data(chosenState):
 
     return jsonify({"state_lat": state_lat, "state_lng": state_lng, "cities": city_list})
 
-@app.route('/leaflet')
-def delete_undefined_coord():
+
+# Define a dictionary to map keywords to categories
+keyword_mapping = {
+    'witch': 'Witches',
+    'light': 'Lights',
+    'lights': 'Lights',
+    'footsteps': 'Footsteps',
+    'steps': 'Footsteps',
+    'sounds': 'Sounds',
+    'sound': 'Sounds',
+    'shadows': 'Shadows',
+    'shadow': 'Shadows',
+    'old man': 'Old Man',
+    'old guy': 'Old Man',
+    'by themselves': 'Objects Moving',
+    'on its own': 'Objects Moving',
+}
+
+# Function to categorize descriptions and return the category
+def categorize_description(description):
+    for keyword in keyword_mapping:
+        if keyword in description.lower():
+            return keyword_mapping.get(keyword, 'Other')
+    return 'Other'
+
+@app.route("/sightings/<chosenState>")
+def get_sightings_for_state(chosenState):
     client = MongoClient("mongodb://localhost:27017/")
-    haunted_places = client['nw_project_3']['haunted_places'] 
-    
-    result = haunted_places.delete_many({"$or": [{"latitude": {"$exists": False}}, {"longitude": {"$exists": False}}]})
-    data = list(haunted_places.find({}, {'_id': 0}))
+    haunted_places = client['nw_project_3']['haunted_places']
+
+    # Initialize a dictionary to store counts for each category
+    category_counts = {
+        'Total': 0,
+        'Witches': 0,
+        'Lights': 0,
+        'Footsteps': 0,
+        'Sounds': 0,
+        'Shadows': 0,
+        'Lady': 0,
+        'Fire': 0,
+        'Little Girl': 0,
+        'Old Man': 0,
+        'Objects Moving': 0,
+        'Other': 0
+    }
+
+   # Get all descriptions for the chosen state
+    descriptions = haunted_places.find({"state": chosenState}, {"description": 1})
+
+    # Categorize and count observations
+    for desc in descriptions:
+        category = categorize_description(desc['description'])
+        category_counts[category] += 1
+
+    # Calculate the total count of observations
+    total_observations = sum(category_counts.values())
+
+    # Add the total count to the 'Total' category
+    category_counts['Total'] = total_observations
+
     client.close()
-    
-    return jsonify(data)
+
+    labels = list(category_counts.keys())
+    counts = list(category_counts.values())
+
+    return jsonify({"labels": labels, "counts": counts})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
