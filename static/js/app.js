@@ -118,14 +118,21 @@ function generateStateLeaflet(state) {
             }
 
             for (let i = 0; i < city_data.length; i++) {
-                cur_city = city_data[i];
+                let cur_city = city_data[i];
+                let sightingStr = cur_city["count"].toString();
+                if (cur_city["count"] == 1) {
+                    sightingStr += " sighting";
+                }
+                else {
+                    sightingStr += " sightings";
+                }
                 if (cur_city["lat"] != null && cur_city["lng"] != null) {
                     L.circle([cur_city["lat"], cur_city["lng"]], {
                         fillOpacity: 0.75,
                         color: "black",
                         fillColor: "white",
-                        radius: cur_city["count"] * 100,
-                    }).bindPopup(`<h3>City: ${cur_city["name"]}</h3><h4>Number of Sightings: ${cur_city["count"]}</h4>`)
+                        radius: cur_city["count"] * 3000,
+                    }).bindPopup(`<h3>${cur_city["name"]}</h3><h4>${sightingStr}</h4>`)
                     .addTo(myMap);
                 }
             }
@@ -134,6 +141,6 @@ function generateStateLeaflet(state) {
 }    
 
 
-generateStateLocationBarGraph("");
-generateStateLeaflet("");
-generateSightingsPiechart("");
+generateStateLocationBarGraph("Alabama");
+generateStateLeaflet("Alabama");
+generateSightingsPiechart("Alabama");
