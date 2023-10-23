@@ -106,20 +106,40 @@ def get_leaflet_data(chosenState):
 
 # Define a dictionary to map keywords to categories
 keyword_mapping = {
+    'ghost': 'Ghosts',
+    'ghosts': 'Ghosts',
+    'spirit': 'Ghosts',
+    'spirits': 'Ghosts',
+    'specter': 'Ghosts',
+    'specters': 'Ghosts',
+    'ghoul': 'Ghosts',
+    'ghouls': 'Ghosts',
+    'old man': 'Ghosts',
+    'old guy': 'Ghosts',
+    'lady': 'Lady',
+    'little girl': 'Little Girl',
     'witch': 'Witches',
     'witches': 'Witches',
     'light': 'Lights',
     'lights': 'Lights',
+    'glow': 'Lights',
     'footsteps': 'Footsteps',
+    'tracks': 'Footsteps',
     'steps': 'Footsteps',
-    'sounds': 'Sounds',
-    'sound': 'Sounds',
+    'sounds': 'Spooky Sounds',
+    'sound': 'Spooky Sounds',
+    'creak': 'Spooky Sounds',
+    'singing': 'Spooky Sounds',
+    'groan': 'Spooky Sounds',
+    'moan': 'Spooky Sounds',
     'shadows': 'Shadows',
     'shadow': 'Shadows',
-    'old man': 'Old Man',
-    'old guy': 'Old Man',
+    'outline': 'Shadows',
+    'fire': 'Fire',
+    'fires': 'Fire',
     'by themselves': 'Objects Moving',
     'on its own': 'Objects Moving',
+    'by itself': 'Objects Moving',
 }
 
 # Function to categorize descriptions and return the category
@@ -137,15 +157,15 @@ def get_sightings_for_state(chosenState):
     # Initialize a dictionary to store counts for each category
     category_counts = {
         'Total': 0,
+        'Ghosts': 0,
         'Witches': 0,
         'Lights': 0,
         'Footsteps': 0,
-        'Sounds': 0,
+        'Spooky Sounds': 0,
         'Shadows': 0,
         'Lady': 0,
         'Fire': 0,
         'Little Girl': 0,
-        'Old Man': 0,
         'Objects Moving': 0,
         'Other': 0
     }
